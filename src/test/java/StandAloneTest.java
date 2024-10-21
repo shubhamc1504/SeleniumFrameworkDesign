@@ -8,18 +8,24 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import pageObjects.LandingPage;
 
 import java.time.Duration;
 import java.util.List;
 
 public class StandAloneTest {
     public static void main(String[] args) {
+
+        String productName1 = "ZARA COAT 3";
+
         WebDriverManager.chromedriver().setup();
         WebDriver driver = new ChromeDriver();
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.get("https://rahulshettyacademy.com/client/");
-
+        LandingPage page = new LandingPage(driver);
+        page.goTo();
+        //Login with the registered user
+        page.loginApplication("Shubhamc1504@gmail.com", "Shubhamc@15041998");
         //Register with new user
 //        driver.findElement(By.xpath("(//a[normalize-space()='Register'])[1]")).click();
 //        driver.findElement(By.id("firstName")).sendKeys("Shubham");
@@ -34,10 +40,6 @@ public class StandAloneTest {
 //        driver.findElement(By.cssSelector("#login")).click();
         //Login with the registered user
 
-        String productName1 = "ZARA COAT 3";
-        driver.findElement(By.id("userEmail")).sendKeys("shubhamc1504@gmail.com");
-        driver.findElement(By.id("userPassword")).sendKeys("Shubhamc@15041998");
-        driver.findElement(By.id("login")).click();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".mb-3")));
         //Ecommerce website functionality
@@ -63,7 +65,7 @@ public class StandAloneTest {
         //explicit wait for options to pop up
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".ta-results")));
         driver.findElement(By.xpath("(//button[contains(@class,'ta-item')])[2]")).click();
-        driver.findElement(By.cssSelector(".ng-star-inserted")).click();
+        driver.findElement(By.cssSelector(".btnn.action__submit.ng-star-inserted")).click();
 
         //put assert to see text is displaying or not
         String confirmMessage = driver.findElement(By.cssSelector(".hero-primary")).getText();
