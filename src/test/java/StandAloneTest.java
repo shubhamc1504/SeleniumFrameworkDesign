@@ -8,8 +8,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import pageObjects.LandingPage;
-import pageObjects.ProductCatalogue;
+import pageObjects.*;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -27,31 +26,17 @@ public class StandAloneTest {
         LandingPage page = new LandingPage(driver);
         page.goTo();
         //Login with the registered user
-        page.loginApplication("shubhamc1504@gmail.com", "Shubhamc@15041998");
-        ProductCatalogue productcatalogue = new ProductCatalogue(driver);
+        ProductCatalogue productcatalogue = page.loginApplication("shubhamc1504@gmail.com", "Shubhamc@15041998");
         List<WebElement> products= productcatalogue.getProductList();
         productcatalogue.addProductToCart(productName);
-
-
-//        driver.findElement(By.cssSelector("[routerlink*='cart']")).click();
-//        //check all the products are added
-//        List<WebElement> cartProducts = driver.findElements(By.cssSelector(".cartSection h3"));
-//        boolean match = cartProducts.stream().anyMatch(cartProduct->cartProduct.getText().equalsIgnoreCase(productName));
-//        Assert.assertTrue(match);
-//        //click on checkout button
-//        driver.findElement(By.cssSelector(".totalRow button")).click();
-//
-//        Actions a = new Actions(driver);
-//        a.sendKeys(driver.findElement(By.cssSelector("[placeholder='Select Country']")), "india").build().perform();
-//        //explicit wait for options to pop up
-//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".ta-results")));
-//        driver.findElement(By.xpath("(//button[contains(@class,'ta-item')])[2]")).click();
-//        driver.findElement(By.cssSelector(".btnn.action__submit.ng-star-inserted")).click();
-//
-//        //put assert to see text is displaying or not
-//        String confirmMessage = driver.findElement(By.cssSelector(".hero-primary")).getText();
-//        Assert.assertTrue(confirmMessage.equalsIgnoreCase("THANKYOU FOR THE ORDER."));
-//        driver.close();
-
+        CartPage cartpage = productcatalogue.goToCartPage();
+        Boolean match = cartpage.VerifyProductDisplay(productName);
+        Assert.assertTrue(match);
+        CheckoutPage checkoutPage = cartpage.goToCheckout();
+        checkoutPage.selectCountry("india");
+        ConfirmationPage confirmationPage = checkoutPage.submitOrder();
+        String confirmMessage = confirmationPage.getConfirmationMessage();
+        Assert.assertTrue(confirmMessage.equalsIgnoreCase("THANKYOU FOR THE ORDER."));
+        driver.close();
     }
 }
